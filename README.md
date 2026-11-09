@@ -12,7 +12,7 @@ Connected to Vercel on 9 Nov 2026: every push to `main` auto-deploys to producti
 
 The Alpha Pulse APK is distributed as a **GitHub Release asset** in this repo
 (tag `v1.0`): the site buttons link to
-`releases/download/v1.0/alpha-pulse.apk`, which GitHub streams directly as an
+`releases/latest/download/alpha-pulse.apk`, which always resolves to the newest published release and streams it directly as an
 attachment — no interstitial pages. (Google Drive hosting was tried first and
 dropped the same evening: real browsers got Drive's virus-scan warning page.)
 Version 1.0 · 6,883,410 bytes ·
