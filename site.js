@@ -145,4 +145,17 @@
     tick();
     setInterval(tick, 1000);
   }
+
+  /* ---------- Alpha Pulse APK version (auto from latest GitHub release) ---------- */
+  var apkVerEls = document.querySelectorAll("[data-apk-version]");
+  if (apkVerEls.length && "fetch" in window) {
+    fetch("https://api.github.com/repos/asifbashir4445/alpha-develops-site/releases/latest")
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (d && d.tag_name) {
+          apkVerEls.forEach(function (el) { el.textContent = d.tag_name; });
+        }
+      })
+      .catch(function () { /* keep the hardcoded version in the HTML */ });
+  }
 })();
