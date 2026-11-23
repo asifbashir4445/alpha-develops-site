@@ -1,10 +1,12 @@
 /* Alpha Pulse web downloader — download relay redirect.
-   The browser cannot call the resolver's /download itself (it needs no
-   token any more, but the resolver host must stay out of the page), so
-   this function validates the signed relay link and hands the browser
+   The browser cannot call the resolver's /download itself, so this
+   function validates the signed relay link and hands the browser
    straight to the resolver, which streams the file with
    Content-Disposition: attachment. The signature is an HMAC issued only
-   by token-gated /resolve, so only links the resolver itself issued work. */
+   by token-gated /resolve, so only links the resolver itself issued
+   work. The whole query string is forwarded unchanged, so both relay
+   forms work: the plain media link (u + s) and the yt-dlp fetch
+   (w + fmt + s), which is what gated CDNs like TikTok need. */
 
 const RESOLVER_BASE =
   process.env.RESOLVER_BASE_URL || "http://141.145.150.182:8080";
@@ -21,20 +23,9 @@ function rateOk(ip) {
 
 export default function handler(req, res) {
   const q = req.query || {};
-  const u = String(q.u || "");
   const s = String(q.s || "");
-  const f = String(q.f || "");
-  let ok = false;
-  try {
-    const parsed = new URL(u);
-    ok =
-      (parsed.protocol === "http:" || parsed.protocol === "https:") &&
-      /^[0-9a-f]{32}$/.test(s) &&
-      u.length <= 4000;
-  } catch {
-    ok = false;
-  }
-  if (!ok) {
+  const hasTarget = q.u || (q.w && q.fmt);
+  if (!/^[0-9a-f]{32}$/.test(s) || !hasTarget) {
     res.status(400).setHeader("Content-Type", "text/plain");
     res.send("That download link is not valid. Go back and press Download again.");
     return;
@@ -48,13 +39,7 @@ export default function handler(req, res) {
     res.send("Too many downloads at once — wait a minute and try again.");
     return;
   }
-  const target =
-    RESOLVER_BASE +
-    "/download?u=" +
-    encodeURIComponent(u) +
-    "&s=" +
-    encodeURIComponent(s) +
-    (f ? "&f=" + encodeURIComponent(f) : "");
-  res.writeHead(302, { Location: target });
+  const raw = (req.url || "").split("?")[1] || "";
+  res.writeHead(302, { Location: RESOLVER_BASE + "/download?" + raw });
   res.end();
 }

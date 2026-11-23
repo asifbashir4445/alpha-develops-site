@@ -240,13 +240,14 @@
   function rowHTML(f, label, tag, tagMuted, best) {
     var size = fmtSize(f.filesize);
     var name = fileName(card._title, f.ext);
-    // Downloads go through the resolver relay (via our proxy): TikTok's
-    // and other CDNs block a direct browser link, and the relay forces a
-    // real file download with a filename. Falls back to the direct link
-    // only if the resolver gave no signed relay path.
+    // Downloads go through the resolver relay (via our proxy): the relay
+    // fetches the exact format with yt-dlp (web_download_path), which is
+    // what gated CDNs like TikTok need — a plain fetch from a datacenter
+    // gets refused. Falls back to the plain relay, then the direct link.
     var href = f.url;
-    if (f.relay_path) {
-      href = "/api/download" + f.relay_path.slice("/download".length) + "&f=" + encodeURIComponent(name);
+    var path = f.web_download_path || f.relay_path;
+    if (path) {
+      href = "/api/download" + path.slice("/download".length) + "&n=" + encodeURIComponent(name);
     }
     return '<div class="q-row' + (best ? " best" : "") + '">' +
       '<span class="q-label">' + esc(label) + '</span>' +
@@ -296,8 +297,9 @@
     if (best && best.url) {
       var bname = fileName(d.title, best.ext);
       var bhref = best.url;
-      if (best.relay_path) {
-        bhref = "/api/download" + best.relay_path.slice("/download".length) + "&f=" + encodeURIComponent(bname);
+      var bpath = best.web_download_path || best.relay_path;
+      if (bpath) {
+        bhref = "/api/download" + bpath.slice("/download".length) + "&n=" + encodeURIComponent(bname);
       }
       var blabel = (best.height ? best.height + "p" : "Best") + (best.filesize ? " · " + fmtSize(best.filesize) : "");
       html += '<div style="margin-top:22px"><a class="btn btn-apk" style="width:100%;justify-content:center" href="' + esc(bhref) + '">Download Best — ' + esc(blabel) + '</a></div>';
