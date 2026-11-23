@@ -143,7 +143,7 @@
         <details><summary>Is it free?</summary><p>Yes — free, no signup and no limits for normal use. If you download on your phone every day, the Alpha Pulse Android app is the faster home for it, with a private vault and offline playback.</p></details>
         <details><summary>Which sites work?</summary><p>YouTube (videos and Shorts), Facebook, Instagram (reels and videos), TikTok, Snapchat, X, Twitch, Dailymotion, SoundCloud and many more — the same reading engine as the app. A few platforms guard their doors with logins; where a wall stands, we tell you honestly instead of pretending.</p></details>
         <details><summary>What quality can I download?</summary><p>MP4 video up to 4K where the platform offers it, and audio only where you just want the sound. Qualities marked "with sound" already have audio mixed in; "video only" ones are the picture track alone.</p></details>
-        <details><summary>Is it safe? Do you keep my videos?</summary><p>We ask for no personal information and we never keep your video — the file comes straight from the platform's own servers to your browser. Only public videos work.</p></details>
+        <details><summary>Is it safe? Do you keep my videos?</summary><p>We ask for no personal information and we never keep your video — the file passes through our server to your browser and is gone the moment it arrives. Only public videos work.</p></details>
         <details><summary>What if a link does not work?</summary><p>Some videos ask the platform to sign in first (YouTube does this for certain popular uploads). Try again in a little while, or open the same link in the Alpha Pulse app, which tries more ways in.</p></details>
       </div>
     </div>
@@ -240,12 +240,20 @@
   function rowHTML(f, label, tag, tagMuted, best) {
     var size = fmtSize(f.filesize);
     var name = fileName(card._title, f.ext);
+    // Downloads go through the resolver relay (via our proxy): TikTok's
+    // and other CDNs block a direct browser link, and the relay forces a
+    // real file download with a filename. Falls back to the direct link
+    // only if the resolver gave no signed relay path.
+    var href = f.url;
+    if (f.relay_path) {
+      href = "/api/download" + f.relay_path.slice("/download".length) + "&f=" + encodeURIComponent(name);
+    }
     return '<div class="q-row' + (best ? " best" : "") + '">' +
       '<span class="q-label">' + esc(label) + '</span>' +
       '<span class="q-tag' + (tagMuted ? " muted" : "") + '">' + esc(tag) + '</span>' +
       (best ? '<span class="q-tag">Best</span>' : "") +
       '<span class="q-size">' + esc(size) + '</span>' +
-      '<a class="q-dl" href="' + esc(f.url) + '" target="_blank" rel="noopener" download="' + esc(name) + '">Download</a>' +
+      '<a class="q-dl" href="' + esc(href) + '">Download</a>' +
       "</div>";
   }
 
@@ -260,7 +268,7 @@
       (ext ? "from <b>" + ext + "</b>" : "") +
       (dur ? " · " + esc(dur) : "") +
       "</div>" +
-      '<p style="color:var(--ink-dim);font-size:.92rem;margin-top:10px">Pick a quality — the file downloads straight from the platform. "With sound" already has audio mixed in.</p>' +
+      '<p style="color:var(--ink-dim);font-size:.92rem;margin-top:10px">Pick a quality and press Download — the file saves straight to your device. "With sound" already has audio mixed in.</p>' +
       "</div></div>";
 
     var formats = (d.formats || []).filter(function (f) { return f.url; });
@@ -282,6 +290,18 @@
 
     var rows = "";
     var bestId = d.best && d.best.format_id;
+    // One-tap best download above the list: the fewest steps — paste,
+    // qualities appear on their own, one tap saves the best file.
+    var best = d.best;
+    if (best && best.url) {
+      var bname = fileName(d.title, best.ext);
+      var bhref = best.url;
+      if (best.relay_path) {
+        bhref = "/api/download" + best.relay_path.slice("/download".length) + "&f=" + encodeURIComponent(bname);
+      }
+      var blabel = (best.height ? best.height + "p" : "Best") + (best.filesize ? " · " + fmtSize(best.filesize) : "");
+      html += '<div style="margin-top:22px"><a class="btn btn-apk" style="width:100%;justify-content:center" href="' + esc(bhref) + '">Download Best — ' + esc(blabel) + '</a></div>';
+    }
     bestPerHeight(prog).forEach(function (f) {
       rows += rowHTML(f, (f.height || "") + "p", "with sound", false, f.format_id === bestId);
     });
@@ -307,6 +327,14 @@
     card.innerHTML = '<div class="dl-error">' + esc(msg) + "</div>";
     resultBox.hidden = false;
   }
+
+  // Paste-and-go: pasting a link resolves it at once — no need to press
+  // "Get video". Typed links still use the button.
+  input.addEventListener("paste", function () {
+    setTimeout(function () {
+      if (input.value.trim()) form.requestSubmit();
+    }, 60);
+  });
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
