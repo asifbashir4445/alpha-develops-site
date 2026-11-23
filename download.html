@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Download Online — Alpha Pulse · Alpha Develops</title>
+<meta name="description" content="Alpha Pulse on the web — paste a video link, see every quality, download it. YouTube, Facebook, Instagram, TikTok and more. No signup, no install.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/png" href="alpha-pulse-icon.png">
+<style>
+  .dl-hero{padding:160px 0 60px;text-align:center}
+  .dl-hero h1{font-size:clamp(2.2rem,6vw,3.8rem);margin:14px 0 14px}
+  .dl-hero .lede{margin:0 auto}
+  .paste-box{max-width:720px;margin:34px auto 0;display:flex;gap:10px;background:var(--glass-strong);border:1px solid var(--stroke);border-radius:999px;padding:8px 8px 8px 22px;backdrop-filter:blur(14px);box-shadow:var(--shadow-lg)}
+  .paste-box input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--ink);font:inherit;font-size:1rem}
+  .paste-box input::placeholder{color:var(--ink-faint)}
+  .paste-box .btn{flex:none;padding:13px 26px}
+  @media (max-width:640px){.paste-box{flex-direction:column;border-radius:22px;padding:12px}.paste-box input{padding:10px 8px}.paste-box .btn{width:100%;justify-content:center}}
+  .dl-note{font-size:.88rem;color:var(--ink-faint);margin-top:16px}
+  .dl-result{max-width:820px;margin:0 auto 20px;text-align:left}
+  .dl-card{padding:28px}
+  .dl-card-head{display:flex;gap:20px;align-items:flex-start}
+  .dl-thumb{width:200px;flex:none;border-radius:14px;overflow:hidden;border:1px solid var(--stroke);background:#0a0d17}
+  .dl-thumb img{width:100%;height:auto;display:block}
+  @media (max-width:640px){.dl-card-head{flex-direction:column}.dl-thumb{width:100%}}
+  .dl-title{font-family:var(--font-display);font-size:1.25rem;line-height:1.3;margin-bottom:6px}
+  .dl-meta{color:var(--ink-dim);font-size:.92rem}
+  .dl-meta b{color:var(--ink)}
+  .q-list{display:grid;gap:10px;margin-top:24px}
+  .q-row{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border:1px solid var(--stroke);border-radius:16px;padding:13px 16px}
+  .q-row.best{border-color:rgba(34,229,132,.55);background:rgba(34,229,132,.07)}
+  .q-label{font-family:var(--font-display);font-weight:700;font-size:1.05rem;min-width:86px}
+  .q-tag{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--heart);border:1px solid rgba(34,229,132,.4);border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .q-tag.muted{color:var(--ink-dim);border-color:var(--stroke)}
+  .q-size{color:var(--ink-dim);font-size:.92rem;margin-left:auto;white-space:nowrap}
+  .q-dl{flex:none;text-decoration:none;font-weight:600;font-size:.92rem;color:#04160b;background:linear-gradient(120deg,var(--heart),var(--heart-deep));padding:9px 18px;border-radius:999px;white-space:nowrap}
+  .q-dl:hover{transform:translateY(-2px)}
+  .q-dl.ghosty{background:var(--glass);color:var(--ink);border:1px solid var(--stroke)}
+  .dl-error{color:#ffb4a8;background:rgba(255,82,82,.09);border:1px solid rgba(255,82,82,.35);border-radius:14px;padding:14px 18px;margin-top:20px;font-size:.97rem}
+  .dl-loading{display:flex;align-items:center;gap:12px;justify-content:center;color:var(--ink-dim);padding:26px 0 6px}
+  .spin{width:22px;height:22px;border-radius:50%;border:3px solid rgba(34,229,132,.25);border-top-color:var(--heart);animation:spin 0.9s linear infinite;flex:none}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .dl-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  @media (max-width:820px){.dl-steps{grid-template-columns:1fr}}
+  .dl-step{padding:26px}
+  .dl-step b{font-family:var(--font-display);font-size:2rem;color:var(--heart);display:block;line-height:1;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<div class="cosmos" aria-hidden="true">
+  <div class="stars"></div>
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+</div>
+<div class="cursor-glow" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="logo" href="index.html" aria-label="Alpha Develops — home">
+      <span class="logo-mark" aria-hidden="true">A</span>
+      <span>ALPHA<small>Develops</small></span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav"><span></span></button>
+    <nav aria-label="Main">
+      <ul class="nav-links" id="main-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="time-burn.html">Time Burn</a></li>
+        <li><a href="alpha-pulse.html">Alpha Pulse</a></li>
+        <li><a href="download.html" aria-current="page">Download Online</a></li>
+        <li><a href="install.html">Install Guide</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ================= DOWNLOADER HERO ================= -->
+  <section class="dl-hero">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="heart-stage" style="margin:0 auto 6px" aria-hidden="true">
+          <div class="heart-halo"></div>
+          <div class="heart-ring"></div>
+          <svg class="heart-svg" viewBox="0 0 100 100" role="img" aria-label="The glowing green heart">
+            <defs>
+              <linearGradient id="hg-dl" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#5cffab"/><stop offset="1" stop-color="#0f9d58"/>
+              </linearGradient>
+            </defs>
+            <path fill="url(#hg-dl)" d="M50 86C22 64 8 48 8 31.5 8 17.9 18.6 8 31 8c8 0 15.4 4.3 19 10.7C53.6 12.3 61 8 69 8c12.4 0 23 9.9 23 23.5C92 48 78 64 50 86z"/>
+            <path fill="#eafff3" opacity=".85" d="M50 66l-14-15h8V36h12v15h8z"/>
+          </svg>
+        </div>
+        <span class="eyebrow">Alpha Pulse · Download Online</span>
+        <h1>Paste a link. <span class="heart-text">Get the video.</span></h1>
+        <p class="lede">YouTube, Facebook, Instagram, TikTok, Snapchat and more — see every quality the video offers and download the one you want. No signup, nothing to install.</p>
+        <form class="paste-box" id="dl-form">
+          <input id="dl-url" type="url" inputmode="url" placeholder="Paste a video link here…" autocomplete="off" spellcheck="false" aria-label="Video link">
+          <button class="btn btn-apk" type="submit" id="dl-go">Get video</button>
+        </form>
+        <p class="dl-note">Public videos only. The file comes straight from the platform's own servers — we never keep your video.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RESULT ================= -->
+  <section style="padding-top:0" aria-live="polite">
+    <div class="wrap">
+      <div class="dl-result" id="dl-result" hidden>
+        <div class="glass dl-card" id="dl-card"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section style="padding-top:0" aria-labelledby="dl-how-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">How it works</span>
+        <h2 id="dl-how-title">Three steps. <span class="heart-text">No account.</span></h2>
+      </div>
+      <div class="dl-steps">
+        <article class="dl-step glass reveal"><b>1</b><h3>Paste the link</h3><p>Copy any public video link — a YouTube video, an Instagram reel, a Facebook video, a TikTok — and paste it above.</p></article>
+        <article class="dl-step glass reveal reveal-d1"><b>2</b><h3>Pick a quality</h3><p>We show every quality the video offers, from 4K down to a light file, plus audio only. The best one is marked for you.</p></article>
+        <article class="dl-step glass reveal reveal-d2"><b>3</b><h3>Download</h3><p>Press Download on the quality you want. The file comes straight from the platform — save it where you like.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section style="padding-top:0" aria-labelledby="dl-faq-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Questions</span>
+        <h2 id="dl-faq-title">Good to know</h2>
+      </div>
+      <div class="faq reveal">
+        <details><summary>Is it free?</summary><p>Yes — free, no signup and no limits for normal use. If you download on your phone every day, the Alpha Pulse Android app is the faster home for it, with a private vault and offline playback.</p></details>
+        <details><summary>Which sites work?</summary><p>YouTube (videos and Shorts), Facebook, Instagram (reels and videos), TikTok, Snapchat, X, Twitch, Dailymotion, SoundCloud and many more — the same reading engine as the app. A few platforms guard their doors with logins; where a wall stands, we tell you honestly instead of pretending.</p></details>
+        <details><summary>What quality can I download?</summary><p>MP4 video up to 4K where the platform offers it, and audio only where you just want the sound. Qualities marked "with sound" already have audio mixed in; "video only" ones are the picture track alone.</p></details>
+        <details><summary>Is it safe? Do you keep my videos?</summary><p>We ask for no personal information and we never keep your video — the file comes straight from the platform's own servers to your browser. Only public videos work.</p></details>
+        <details><summary>What if a link does not work?</summary><p>Some videos ask the platform to sign in first (YouTube does this for certain popular uploads). Try again in a little while, or open the same link in the Alpha Pulse app, which tries more ways in.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= APP CTA ================= -->
+  <section style="padding-top:0" aria-labelledby="dl-app-title">
+    <div class="wrap">
+      <div class="cta-band glass reveal">
+        <h2 id="dl-app-title">Want it on your phone too?</h2>
+        <p>Alpha Pulse for Android does all of this and more — a private vault, offline playback, audio extraction in a heartbeat, and downloads that keep working in the background.</p>
+        <div class="btn-row">
+          <a class="btn btn-apk" href="https://github.com/asifbashir4445/alpha-develops-site/releases/latest/download/alpha-pulse.apk" download>Direct Download (APK) · <span data-apk-version>v1.1</span></a>
+          <a class="btn btn-ghost" href="https://play.google.com/store/apps/details?id=com.alphadevelops.alphapulse" rel="noopener">Get it on Google Play</a>
+          <a class="btn btn-ghost" href="alpha-pulse.html">About Alpha Pulse</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="logo" href="index.html" aria-label="Alpha Develops — home">
+          <span class="logo-mark" aria-hidden="true">A</span>
+          <span>ALPHA<small>Develops</small></span>
+        </a>
+        <p style="color:var(--ink-dim);font-size:.92rem;margin-top:14px;max-width:30ch">Small village. Big software.</p>
+      </div>
+      <nav class="footer-col" aria-label="Apps">
+        <h3>Apps</h3>
+        <ul>
+          <li><a href="time-burn.html">Time Burn</a></li>
+          <li><a href="alpha-pulse.html">Alpha Pulse</a></li>
+          <li><a href="download.html">Download Online</a></li>
+          <li><a href="install.html">Install Guide</a></li>
+        </ul>
+      </nav>
+      <div class="footer-col">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="mailto:asifbashir4445@gmail.com">asifbashir4445@gmail.com</a></li>
+          <li><a href="https://asifbashir4445.github.io/Time-Burn-Privacy-Policy/" rel="noopener">Time Burn — Privacy Policy</a></li>
+          <li><a href="https://asifbashir4445.github.io/alpha-downloader-privacy-policy/" rel="noopener">Alpha Pulse — Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-credit">Made with ❤️ in Koria Balochan Wala, Bhakkar, Pakistan
+      <span class="copy">© 2026 Alpha Develops · Asif Bashir Khan. All rights reserved.</span>
+    </p>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script>
+(function () {
+  "use strict";
+  var form = document.getElementById("dl-form");
+  var input = document.getElementById("dl-url");
+  var go = document.getElementById("dl-go");
+  var resultBox = document.getElementById("dl-result");
+  var card = document.getElementById("dl-card");
+  if (!form) return;
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function fmtSize(n) {
+    if (!n || n <= 0) return "";
+    var u = ["B", "KB", "MB", "GB"], i = 0, v = n;
+    while (v >= 1024 && i < u.length - 1) { v /= 1024; i++; }
+    return (v >= 100 ? Math.round(v) : v.toFixed(1)) + " " + u[i];
+  }
+  function fmtDur(s) {
+    if (s == null || isNaN(s)) return "";
+    s = Math.round(s);
+    var m = Math.floor(s / 60), ss = s % 60;
+    return m + ":" + (ss < 10 ? "0" : "") + ss;
+  }
+  function fileName(title, ext) {
+    var t = String(title || "video").replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80) || "video";
+    return t + "." + (ext || "mp4");
+  }
+  function stdHeight(h) {
+    var buckets = [2160, 1440, 1080, 720, 480, 360, 240, 144];
+    for (var i = 0; i < buckets.length; i++) if (h >= buckets[i] - 40) return buckets[i];
+    return h;
+  }
+
+  function rowHTML(f, label, tag, tagMuted, best) {
+    var size = fmtSize(f.filesize);
+    var name = fileName(card._title, f.ext);
+    return '<div class="q-row' + (best ? " best" : "") + '">' +
+      '<span class="q-label">' + esc(label) + '</span>' +
+      '<span class="q-tag' + (tagMuted ? " muted" : "") + '">' + esc(tag) + '</span>' +
+      (best ? '<span class="q-tag">Best</span>' : "") +
+      '<span class="q-size">' + esc(size) + '</span>' +
+      '<a class="q-dl" href="' + esc(f.url) + '" target="_blank" rel="noopener" download="' + esc(name) + '">Download</a>' +
+      "</div>";
+  }
+
+  function render(d) {
+    card._title = d.title || "video";
+    var dur = fmtDur(d.duration);
+    var ext = esc(d.extractor || "");
+    var html = '<div class="dl-card-head">' +
+      (d.thumbnail ? '<div class="dl-thumb"><img src="' + esc(d.thumbnail) + '" alt="" onerror="this.parentNode.style.display=\'none\'"></div>' : "") +
+      '<div><div class="dl-title">' + esc(d.title || "Video") + "</div>" +
+      '<div class="dl-meta">' +
+      (ext ? "from <b>" + ext + "</b>" : "") +
+      (dur ? " · " + esc(dur) : "") +
+      "</div>" +
+      '<p style="color:var(--ink-dim);font-size:.92rem;margin-top:10px">Pick a quality — the file downloads straight from the platform. "With sound" already has audio mixed in.</p>' +
+      "</div></div>";
+
+    var formats = (d.formats || []).filter(function (f) { return f.url; });
+    var prog = formats.filter(function (f) { return f.vcodec && f.vcodec !== "none" && f.acodec && f.acodec !== "none"; });
+    var vidOnly = formats.filter(function (f) { return f.vcodec && f.vcodec !== "none" && (!f.acodec || f.acodec === "none"); });
+    var audOnly = formats.filter(function (f) { return (!f.vcodec || f.vcodec === "none") && f.acodec && f.acodec !== "none"; });
+
+    function bestPerHeight(list) {
+      var byH = {};
+      list.forEach(function (f) {
+        var h = f.height || 0;
+        if (!h) return;
+        var k = stdHeight(h);
+        var cur = byH[k];
+        if (!cur || (f.ext === "mp4" && cur.ext !== "mp4") || ((f.filesize || 0) > (cur.filesize || 0) && f.ext === cur.ext)) byH[k] = f;
+      });
+      return Object.keys(byH).map(Number).sort(function (a, b) { return b - a; }).map(function (k) { return byH[k]; });
+    }
+
+    var rows = "";
+    var bestId = d.best && d.best.format_id;
+    bestPerHeight(prog).forEach(function (f) {
+      rows += rowHTML(f, (f.height || "") + "p", "with sound", false, f.format_id === bestId);
+    });
+    if (!prog.length) {
+      bestPerHeight(vidOnly).forEach(function (f) {
+        rows += rowHTML(f, (f.height || "") + "p", "video only", true, false);
+      });
+      if (vidOnly.length) rows += '<p style="color:var(--ink-dim);font-size:.9rem;margin-top:4px">These are picture-only files. For sound mixed in, use the Alpha Pulse app — it joins the sound for you.</p>';
+    }
+    var audio = d.audio || audOnly.sort(function (a, b) { return (b.abr || 0) - (a.abr || 0); })[0];
+    if (audio) {
+      rows += rowHTML(audio, "Audio", "MP3 / audio" + (audio.abr ? " · " + Math.round(audio.abr) + " kbps" : ""), false, false);
+    }
+    if (!rows) {
+      rows = '<div class="dl-error">No downloadable file was found for this link. It may be private, or the platform may be asking to sign in. Try the Alpha Pulse app — it tries more ways in.</div>';
+    }
+    card.innerHTML = html + '<div class="q-list">' + rows + "</div>";
+    resultBox.hidden = false;
+    resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function showError(msg) {
+    card.innerHTML = '<div class="dl-error">' + esc(msg) + "</div>";
+    resultBox.hidden = false;
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var url = input.value.trim();
+    if (!url) { input.focus(); return; }
+    go.disabled = true;
+    go.textContent = "Reading…";
+    resultBox.hidden = false;
+    card.innerHTML = '<div class="dl-loading"><span class="spin"></span> Reading the video…</div>';
+    fetch("/api/resolve", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: url }),
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (o) {
+        if (!o.ok) {
+          showError((o.d && o.d.message) || "That video could not be read. Try again, or use the Alpha Pulse app.");
+          return;
+        }
+        render(o.d);
+      })
+      .catch(function () {
+        showError("The downloader could not be reached. Check your connection and try again.");
+      })
+      .finally(function () {
+        go.disabled = false;
+        go.textContent = "Get video";
+      });
+  });
+})();
+</script>
+</body>
+</html>
