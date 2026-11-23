@@ -41,6 +41,7 @@
   .q-dl.ghosty{background:var(--glass);color:var(--ink);border:1px solid var(--stroke)}
   .dl-error{color:#ffb4a8;background:rgba(255,82,82,.09);border:1px solid rgba(255,82,82,.35);border-radius:14px;padding:14px 18px;margin-top:20px;font-size:.97rem}
   .dl-loading{display:flex;align-items:center;gap:12px;justify-content:center;color:var(--ink-dim);padding:26px 0 6px}
+  .dl-prep{color:#a8f0c6;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.35);border-radius:14px;padding:12px 16px;margin-top:16px;font-size:.95rem}
   .spin{width:22px;height:22px;border-radius:50%;border:3px solid rgba(34,229,132,.25);border-top-color:var(--heart);animation:spin 0.9s linear infinite;flex:none}
   @keyframes spin{to{transform:rotate(360deg)}}
   .dl-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
@@ -113,6 +114,7 @@
     <div class="wrap">
       <div class="dl-result" id="dl-result" hidden>
         <div class="glass dl-card" id="dl-card"></div>
+        <p class="dl-prep" id="dl-prep" hidden>Preparing your download — the file is being fetched, this takes a few seconds. Please wait, don't press again.</p>
       </div>
     </div>
   </section>
@@ -329,6 +331,17 @@
     card.innerHTML = '<div class="dl-error">' + esc(msg) + "</div>";
     resultBox.hidden = false;
   }
+
+  // The file takes a few seconds to fetch before the browser starts
+  // saving it — show a note on tap so the wait is visible, not silent.
+  var prepNote = document.getElementById("dl-prep");
+  resultBox.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest ? e.target.closest("a") : null;
+    if (a && (a.getAttribute("href") || "").indexOf("/api/download") === 0) {
+      prepNote.hidden = false;
+      prepNote.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  });
 
   // Paste-and-go: pasting a link resolves it at once — no need to press
   // "Get video". Typed links still use the button.
