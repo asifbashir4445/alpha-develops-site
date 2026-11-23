@@ -82,10 +82,17 @@ export default async function handler(req, res) {
     });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) {
-      const msg =
-        data && data.error
-          ? String(data.error).slice(0, 300)
-          : "The video could not be read.";
+      const raw =
+        data && data.error ? String(data.error) : "The video could not be read.";
+      const low = raw.toLowerCase();
+      let msg = raw.slice(0, 300);
+      if (low.includes("video is unavailable") || low.includes("private video") || low.includes("deleted")) {
+        msg = "This video is unavailable — it may have been deleted or made private. Try another public link.";
+      } else if (low.includes("sign in to confirm") || low.includes("login_required") || low.includes("sign in to confirm")) {
+        msg = "YouTube is asking to sign in for this video. Try again in a little while, or use the Alpha Pulse app.";
+      } else if (low.includes("vpn") || low.includes("proxy")) {
+        msg = "YouTube did not answer for this link. Try again, or use the Alpha Pulse app.";
+      }
       return json(res, r.status === 429 ? 429 : 422, {
         error: "resolve_failed",
         message: msg,
